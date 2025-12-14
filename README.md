@@ -1,2 +1,149 @@
 # My-website
-We want to give good things and make the world a wonderful 
+We want to give good things and make the world a wonderful https://github.com/fathima-org/My-website.git
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Maven - Shop Everything (Non-Food)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        header { background: #ff6b35; color: white; padding: 1rem; text-align: center; }
+        .search-bar { width: 50%; padding: 0.5rem; margin: 1rem auto; display: block; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; padding: 2rem; }
+        .product { background: white; border-radius: 8px; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
+        .price { font-size: 1.2rem; font-weight: bold; color: #ff6b35; }
+        button { background: #ff6b35; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin: 0.2rem; }
+        #cart { position: fixed; top: 20px; right: 20px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-width: 300px; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        #modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; }
+        input { width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Market Maven by Fathima and Muazza</h1>
+        <input type="text" id="search" class="search-bar" placeholder="Search products (e.g., shoes, electronics)...">
+    </header>
+
+    <div class="products" id="products">
+        <!-- Sample products (expand with JS data for more) -->
+        <div class="product" data-name="Laptop">
+            <img src="https://via.placeholder.com/250x150/4A90E2/white?text=Laptop" alt="Laptop">
+            <h3>HP Laptop</h3>
+            <p class="price">₹45,999</p>
+            <button onclick="addToCart('HP Laptop', 45999)">Add to Cart</button>
+            <button onclick="buyNow('HP Laptop', 45999)">Buy Now</button>
+        </div>
+        <div class="product" data-name="Sneakers">
+            <img src="https://via.placeholder.com/250x150/7ED321/white?text=Sneakers" alt="Sneakers">
+            <h3>Nike Sneakers</h3>
+            <p class="price">₹5,499</p>
+            <button onclick="addToCart('Nike Sneakers', 5499)">Add to Cart</button>
+            <button onclick="buyNow('Nike Sneakers', 5499)">Buy Now</button>
+        </div>
+        <div class="product" data-name="Watch">
+            <img src="https://via.placeholder.com/250x150/F5A623/white?text=Watch" alt="Watch">
+            <h3>Rolex Watch</h3>
+            <p class="price">₹2,50,000</p>
+            <button onclick="addToCart('Rolex Watch', 250000)">Add to Cart</button>
+            <button onclick="buyNow('Rolex Watch', 250000)">Buy Now</button>
+        </div>
+        <div class="product" data-name="T-Shirt">
+            <img src="https://via.placeholder.com/250x150/50E3C2/white?text=T-Shirt" alt="T-Shirt">
+            <h3>Cotton T-Shirt</h3>
+            <p class="price">₹799</p>
+            <button onclick="addToCart('Cotton T-Shirt', 799)">Add to Cart</button>
+            <button onclick="buyNow('Cotton T-Shirt', 799)">Buy Now</button>
+        </div>
+    </div>
+
+    <div id="cart">
+        <h3>Cart (₹<span id="total">0</span>)</h3>
+        <ul id="cart-items"></ul>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <div id="modal">
+        <div id="modal-content">
+            <h2>Buy Now</h2>
+            <div id="buy-info"></div>
+            <input type="text" id="name" placeholder="Full Name">
+            <input type="text" id="phone" placeholder="Phone Number">
+            <input type="text" id="address" placeholder="Shipping Address">
+            <input type="text" id="pincode" placeholder="Pincode">
+            <button onclick="processOrder()">Pay Now (Demo)</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let total = 0;
+
+        // Sample product data (simulate 100s; real site needs database/API for 8M products)
+        const products = [
+            {name: 'HP Laptop', price: 45999, img: 'https://via.placeholder.com/250x150/4A90E2/white?text=Laptop'},
+            {name: 'Nike Sneakers', price: 5499, img: 'https://via.placeholder.com/250x150/7ED321/white?text=Sneakers'},
+            {name: 'Rolex Watch', price: 250000, img: 'https://via.placeholder.com/250x150/F5A623/white?text=Watch'},
+            {name: 'Cotton T-Shirt', price: 799, img: 'https://via.placeholder.com/250x150/50E3C2/white?text=T-Shirt'},
+            // Add more categories: electronics, clothing, books, furniture, etc. (non-food)
+        ];
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            total += price;
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cart-items').innerHTML = cart.map(item => `<li>${item.name} - ₹${item.price}</li>`).join('');
+            document.getElementById('total').textContent = total;
+        }
+
+        function buyNow(name, price) {
+            document.getElementById('buy-info').innerHTML = `<p>${name} - ₹${price}</p>`;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function processOrder() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const pincode = document.getElementById('pincode').value;
+            if (name && phone && address && pincode) {
+                alert(`Order placed! Name: ${name}, Phone: ${phone}, Address: ${address}, Pincode: ${pincode}. (Demo - Integrate Razorpay/UPI for real payments)`);
+                closeModal();
+            } else {
+                alert('Please fill all fields.');
+            }
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                alert(`Checkout total: ₹${total}. Proceed to payment. (Demo)`);
+            }
+        }
+
+        // Search functionality
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const productEls = document.querySelectorAll('.product');
+            productEls.forEach(el => {
+                const name = el.dataset.name.toLowerCase();
+                el.style.display = name.includes(query) ? 'block' : 'none';
+            });
+        });
+
+        // Dynamically add more products (simulate large catalog)
+        function loadMoreProducts() {
+            // In real app, fetch from API/database
+        }
+    </script>
+</body>
+</html>
